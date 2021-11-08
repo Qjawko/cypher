@@ -4,15 +4,13 @@ import (
 	"bytes"
 	"encoding/base32"
 	"encoding/base64"
-	"encoding/gob"
 	"encoding/hex"
+	"encoding/json"
 )
 
 func toBytes(obj interface{}) ([]byte, error) {
 	var buffBin bytes.Buffer
-
-	encoderBin := gob.NewEncoder(&buffBin)
-	if err := encoderBin.Encode(obj); err != nil {
+	if err := json.NewEncoder(&buffBin).Encode(obj); err != nil {
 		return nil, err
 	}
 
@@ -48,9 +46,7 @@ func toHexString(obj interface{}) (string, error) {
 
 func fromBytes(obj interface{}, b []byte) error {
 	buffBin := bytes.NewBuffer(b)
-	decoder := gob.NewDecoder(buffBin)
-
-	return decoder.Decode(obj)
+	return json.NewDecoder(buffBin).Decode(obj)
 }
 
 func fromB64String(obj interface{}, s string) error {
